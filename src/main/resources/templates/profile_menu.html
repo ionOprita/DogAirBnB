@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:style="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<div class="nav-side-menu" th:fragment="nav-bar-profile">
+    <div class="brand"><a style="color: inherit" href="/" th:href="@{/}">Hotel</a></div>
+    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+
+    <div class="menu-list">
+
+        <ul id="menu-content" class="menu-content collapse out">
+            <li th:classappend="${#httpServletRequest.getRequestURI().endsWith('/profile') ? 'active':''}">
+                <a th:href="@{/profile}">
+                    <i class="fa fa-user fa-lg"></i> Profile
+                </a>
+            </li>
+            <!--<li sec:authentication="principal.authorities"></li>-->
+            <li sec:authorize="hasAuthority('customer')" th:classappend="${#httpServletRequest.getRequestURI().contains('profile/user') ? 'active':''}" data-toggle="collapse" data-target="#user-menu" class="collapsed">
+                <a href="#"><i class="fa fa-gift fa-lg"></i> User Menu <span class="arrow"></span></a>
+            </li>
+            <ul sec:authorize="hasAuthority('customer')" class="sub-menu collapse" id="user-menu">
+                <li th:classappend="${#httpServletRequest.getRequestURI().contains('/user/chats') ? 'active':''}"><a href="/profile/user/chats">Messages</a></li>
+                <li th:classappend="${#httpServletRequest.getRequestURI().contains('/user/books') ? 'active':''}"><a href="#" th:href="@{/profile/user/books}">My Books</a></li>
+            </ul>
+
+            <li sec:authorize="hasAuthority('host')" th:if="${@registerService.isHostEnabled(#httpServletRequest.remoteUser)==true}" data-toggle="collapse" data-target="#host-menu" class="collapsed" th:classappend="${#httpServletRequest.getRequestURI().contains('/host') ? 'active':''}">
+                <a href="#"><i class="fa fa-gift fa-lg"></i> Host Menu <span class="arrow"></span></a>
+            </li>
+
+            <ul sec:authorize="hasAuthority('host')" th:if="${@registerService.isHostEnabled(#httpServletRequest.remoteUser)==true}" class="sub-menu collapse" id="host-menu">
+                <li>
+                    <a th:classappend="${#httpServletRequest.getRequestURI().endsWith('/apartments') ? 'active':''}" th:href="@{/profile/host/apartments}">
+                        <i class="fa fa-bed fa-lg"></i> Apartments
+                    </a>
+                </li>
+
+                <li>
+                    <a th:classappend="${#httpServletRequest.getRequestURI().endsWith('/add_apartment') ? 'active':''}" th:href="@{/profile/host/add_apartment}" >
+                        <i class="fa fa-plus fa-lg"></i> Add Apartment
+                    </a>
+                </li>
+            </ul>
+
+        </ul>
+    </div>
+</div>
+</body>
+</html>

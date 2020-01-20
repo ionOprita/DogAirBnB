@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:style="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <!--bootstrap and jquery-->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <!--fonts and icons-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+
+    <!--for date range picker-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/daterangepicker.css}" href="css/daterangepicker.css"/>
+
+    <!--custom css/js-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/profile.css}" href="css/profile.css"/>
+
+    <title>My Apartments</title>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="nav-side-menu" th:replace="profile_menu :: nav-bar-profile"></div><!--end of side bar-->
+        </div><!--end of col-3 for the bar -->
+        <div id="my_chats" class="col-sm-9">
+            <h1>My Chats With Hosts</h1>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <tr>
+                        <th class="text-center">Apartment Name</th>
+                        <th class="text-center">Number Of messages</th>
+                        <th class="text-center">View chat</th>
+                    </tr>
+                    <tr th:each="chat : ${chats}" data-toggle="modal" data-target="#chat-modal" onclick="userShowChat(1);" th:onclick="${'userShowChat('+chat.chatId+')'}">
+                        <td class="text-center"><a th:href="@{/apartment(hotel-id=${chat.apartment.apartmentId})}" th:text="${chat.apartment.name}">Teleio Spiti</a></td>
+                        <td class="text-center" th:text="${chat.messages?.size()}">11</td>
+                        <td class="text-center">Click me ;(</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="chat-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!--Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3 class="modal-title text-center">Chat</h3>
+            </div>
+<!--chat code-->
+            <div id="chat_actual" class="modal-body">
+                <div id="chat_loading" class="modal-content">
+                    <div class="modal-header text-center">
+                        <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 frame">
+                    <ul class="pre-scrollable" id="message-list"></ul>
+                    <div>
+                        <div class="msj-rta macro" style="margin:auto">
+                            <div class="text text-r" style="background:whitesmoke !important">
+                                <form id="new_msg_form" method="post" th:action="@{/somthing}">
+                                    <input name="message" class="mytext" placeholder="Type a message"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--end of chat code-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" th:src="@{/js/daterangepicker.js}" src="js/daterangepicker.js"></script>
+<script type="text/javascript" th:src="@{/js/profile.js}" src="js/profile.js"></script>
+
+<script>
+    var curChatId=-1;
+//    //-- Clear Chat
+//    resetChat();
+//
+//    //-- Print Messages
+//    insertChat("me", "Hello Tom...", 0);
+//    insertChat("you", "Hi, Pablo", 1500);
+//    insertChat("me", "What would you like to talk about today?", 3500);
+//    insertChat("you", "Tell me a joke",7000);
+//    insertChat("me", "Spaceman: Computer! Computer! Do we bring battery?!", 9500);
+//    insertChat("you", "LOL", 12000);
+
+</script>
+<script th:inline="javascript">
+    $( "#new_msg_form" ).on( "submit", function( event ) {
+        event.preventDefault();
+        $.post(
+            '/profile/user/new_message_to_chat/' + curChatId,
+            $(this).serialize()
+        ).success(function (data) {
+            if (data === true) {
+                userShowChat(curChatId);
+            } else {
+                alert("Something is wrong with the dates.Make sure that it's not already in use");
+            }
+        });
+        $("input[name='message']").val("");
+    });
+
+//    $(".mytext").on("keyup", function(e){
+//        if (e.which == 13){
+//            var text = $(this).val();
+//            if (text !== ""){
+//                /*<![CDATA[*/
+//                if(curChatId==-1){
+//                    alert("not a chat choosen");
+//                    return;
+//                }
+//                $.post(
+//                    '/profile/user/new_message_to_chat/'+curChatId,
+//                    { message : text}
+//                ).success(function (data) {
+//                /*]]>*/
+//                    if(data === true ){
+//                        userShowChat(curChatId);
+//                    }else{
+//                        alert("Something is wrong with the dates.Make sure that it's not already in use");
+//                    }
+//                })
+//                $(this).val('');
+//            }
+//        }
+//    });
+
+</script>
+</body>
+</html>

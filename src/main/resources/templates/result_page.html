@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:style="http://www.w3.org/1999/xhtml">
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+
+    <title>Result page</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="css/daterangepicker.css"/>
+
+    <!-- Custom CSS -->
+    <link href="css/main.css" rel="stylesheet"/>
+    <link href="css/result-page.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav th:replace=" top_bar :: 'nav-bar-only-login'" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">LIVE NOW</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/sign-up"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
+                    </li>
+                    <li>
+                        <a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    <li>
+                        <a href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Sidebar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+        <form action="result" th:action="@{/result}" method="get">
+            <ul class="nav sidebar-nav">
+                <li class="sidebar-brand">
+                    FILTERS
+                </li>
+
+                <li>
+                    <input class="date-range" type="text" placeholder="Select Date" required="required" name="date-range" id="date-range" />
+                </li>
+
+                <li>
+                    <input class="place-name" type="text" placeholder="Select City-Neighbor" required="required" name="city" id="city" />
+                </li>
+
+                <li>
+                    <input class="people" type="number" placeholder="4 Persons" required="required" name="people" id="people" />
+                </li>
+
+
+                <li>
+                    <!--<label for="f-room-type">Room type</label>-->
+                    <select id="f-room-type" name="roomType">
+                        <option value="all">Anything</option>
+                        <option value="whole_apartment">Whole Apartment</option>
+                        <option value="shared_room"> Shared Room</option>
+                        <option value="private_room">Private Room</option>
+                    </select>
+                </li>
+                <li>
+                    <label for="f-elevator">Max Cost</label>
+                    <input type="number" name="max-cost" id="f-max-cost"/>
+                </li>
+
+                <li>
+                    <label for="f-wifi">wi-fi</label>
+                    <input type="checkbox" name="wifi" id="f-wifi"/>
+                </li>
+                <li>
+                    <label for="f-fridge">Fridge</label>
+                    <input type="checkbox" name="fridge" id="f-fridge"/>
+                </li>
+                <li>
+                    <label for="f-kitchen">Kitchen</label>
+                    <input type="checkbox" name="kitchen" id="f-kitchen"/>
+                </li>
+                <li>
+                    <label for="f-tv">TV</label>
+                    <input type="checkbox" name="tv" id="f-tv"/>
+                </li>
+                <li>
+                    <label for="f-parking">parking</label>
+                    <input type="checkbox" name="parking" id="f-parking"/>
+                </li>
+                <li>
+                    <label for="f-elevator">Elevator</label>
+                    <input type="checkbox" name="elevator" id="f-elevator"/>
+                </li>
+                <li>
+                    <label for="f-air-condition">Air Condition</label>
+                    <input type="checkbox" name="air-condition" id="f-air-condition"/>
+                </li>
+                <li>
+                    <button onclick="clearFilters()">Clear</button>
+                </li>
+                <li>
+                    <!--<label for="f-air-condition">Air Condition</label>-->
+                    <input type="submit" name="submit" value="Submit Filters" id="f-submit"/>
+                </li>
+            </ul>
+        </form>
+    </nav>
+    <!-- /#sidebar-wrapper -->
+
+
+    <!-- Page Content -->
+    <button type="button" class="hamburger is-closed" data-toggle="offcanvas" id="filter-btn">
+        <div class="filters-btn-text">
+            filter
+        </div>
+        <!--<span class="hamb-top"></span>-->
+        <!--<span class="hamb-middle"></span>-->
+        <!--<span class="hamb-bottom"></span>-->
+    </button>
+
+    <div id="page-content-wrapper">
+        <!-- Page Heading -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" th:unless="${results== null || results.searchResult==null || results.searchResult?.size() == 0}">Results
+                        <small th:text="${results.totalNumberOfResults}"></small>
+                    </h1>
+
+                    <h1 class="page-header" th:if="${results== null || results.searchResult==null || results.searchResult?.size() == 0}">
+                        No results found matching your criteria
+                    </h1>
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <!-- Projects Row -->
+
+            <div th:unless="${results== null || results.searchResult==null || results.searchResult.size() == 0}" class="row">
+                <div th:each="oneApartment : ${results.searchResult}" class="col-md-3 portfolio-item">
+                    <a class="hotel-link" href="/hotel?hotel-id=1" th:href="@{/apartment(hotel-id=${oneApartment.apartmentId},date-range=${oldDateStr})}">
+                        <div th:if="${oneApartment.images.size()>0}">
+                            <img class="img-responsive" th:src="${oneApartment.images.get(0).picturePath}" alt=""/>
+                        </div>
+                        <div th:unless="${oneApartment.images.size()>0}">
+                            <img class="img-responsive" src="http://placehold.it/750x450" alt=""/>
+                        </div>
+                        <div class="caption" th:with="rateAprt=${#numbers.formatDecimal(@reviewService.getApartmentAvg(oneApartment.apartmentId), 0, 2)}">
+                            <p class="hotel-cost" th:text="${oneApartment.price}+'€'">10€</p>
+                            <p class="number-of-beds" th:text="${oneApartment.bed}+' beds'">4 beds</p>
+                            <p th:inline="text" class="ratings">[[${rateAprt}]]/5([[${oneApartment.bookReviews.size()}]])</p>
+                        </div>
+                        <div class="caption-top">
+                            <p th:inline="text" th:if="${oneApartment.type.equals('whole_apartment')}" class="hotel-type">[[${oneApartment.name}]] (All Apartment)</p>
+                            <p th:inline="text" th:if="${oneApartment.type.equals('private_room')}" class="hotel-type">[[${oneApartment.name}]] (Private Room)</p>
+                            <p th:inline="text" th:if="${oneApartment.type.equals('shared_room')}" class="hotel-type">[[${oneApartment.name}]] (Shared Room)</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <hr/>
+
+                <!-- Pagination -->
+            <div class="row text-center" th:unless="${results== null || results.searchResult==null || results.searchResult==null || results.searchResult.size() == 0}">
+                <div class="col-lg-12">
+                    <ul class="pagination" th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}">
+                        <!--<li>-->
+                            <!--<a href="#">&laquo;</a>-->
+                        <!--</li>-->
+                        <li th:each="i : ${#numbers.sequence( 1, results.totalNumberOfPages,1)}" th:classappend="${i==results.curPage ? 'active':''}">
+                            <a href="#" th:href="${urlBuilder.replaceQueryParam('page', i).build().toString()}" th:text="${i}">1</a>
+                        </li>
+                        <!--<li>-->
+                            <!--<a href="#">&raquo;</a>-->
+                        <!--</li>-->
+                    </ul>
+                </div>
+            </div>
+            <!-- /.row -->
+
+            <hr/>
+
+            <!-- Footer -->
+            <footer>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Copyright &copy; Ted 2017 ;)</p>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </footer>
+
+        </div>
+        <!-- /.container -->
+    </div>
+</div>
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/result-page.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="js/daterangepicker.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+
+<script type="text/javascript" th:inline="javascript">
+    function isValidRange(start, end) {
+        var dataObj = $('input[name="date-range"]').data('daterangepicker');
+        /*<![CDATA[*/
+        if( start.format('YYYY-MM-DD') < new moment().format('YYYY-MM-DD') ){
+            dataObj.setStartDate(new Date());
+            dataObj.setEndDate(new Date());
+            alert("please select a day in the future");
+            dataObj.show();
+        }else{
+            ;
+        }/*]]>*/
+    }
+    //     attach daterangepicker plugin
+
+
+
+    var funIsInvalid=function isInvalid(date) {
+        /*<![CDATA[*/
+        if (date.format('YYYY-MM-DD') < new moment().format('YYYY-MM-DD') ) {
+            return true;
+        } else {
+            return false;
+        }/*]]>*/
+    }
+
+    $(function() {
+        $('input[name="date-range"]').daterangepicker({
+            startDate : [[${oldDateStr}]].toString().split("-")[0].trim(),
+            endDate : [[${oldDateStr}]].toString().split("-")[1].trim(),
+            isInvalidDate:funIsInvalid,
+            autoApply: true
+        });
+        $('input[name="date-range"]').on('apply.daterangepicker', function(ev, picker) {
+//            console.log(picker.startDate.format('YYYY-MM-DD'));
+//            console.log(picker.endDate.format('YYYY-MM-DD'));
+            isValidRange(picker.startDate,picker.endDate);
+        });
+
+    /*<![CDATA[*/
+        $('#city').val([[${oldValues.city}]]);
+
+//        console.log($('#city').value());
+
+        $('#people').val( [[${oldValues.numberOfPerson}]] );
+//        alert($('#people').value());
+        if([[${oldValues.hasWifi}]] ==true){
+            $('#f-wifi').attr('checked',true);
+        }
+        if([[${oldValues.hasFrige}]] ==true){
+            $('#f-fridge').attr('checked',true);
+        }
+        if([[${oldValues.hasKitchen}]] ==true){
+            $('#f-kitchen').attr('checked',true);
+        }
+        if([[${oldValues.hasTV}]] ==true){
+            $('#f-tv').attr('checked',true);
+        }
+        if([[${oldValues.hasParking}]] ==true){
+            $('#f-parking').attr('checked',true);
+        }
+        if([[${oldValues.hasElevator}]] ==true){
+            $('#f-elevator').attr('checked',true);
+        }
+        if([[${oldValues.hasAircondition}]] ==true){
+            $('#f-air-condition').attr('checked',true);
+        }
+        if([[${oldValues.maxCost>0}]]){
+            $('#f-max-cost').val([[${oldValues.maxCost}]]);
+        }
+        if([[${oldValues.roomType}]]!=""){
+            $('#f-room-type').val([[${oldValues.roomType}]]);
+        }
+        /*]]>*/
+    });
+
+
+</script>
+<script type="text/javascript" th:inline="javascript">
+</script>
+
+</body>
+
+</html>
